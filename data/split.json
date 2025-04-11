@@ -1,0 +1,5 @@
+{
+    "train_name_list": ["sample1", "sample2"],
+    "valid_name_list": ["sample3"]
+  }
+  

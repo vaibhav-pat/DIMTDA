@@ -8,7 +8,7 @@ import argparse
 def train(args):
 
     MAX_LENGTH = args.max_length
-    
+
     from transformers import AutoTokenizer
     en_tokenizer = AutoTokenizer.from_pretrained(args.en_tokenizer_dir)
     zh_tokenizer = AutoTokenizer.from_pretrained(args.zh_tokenizer_dir)
@@ -65,10 +65,15 @@ def train(args):
     encoder_decoder_config.vocab_size = len(zh_tokenizer)
 
     model = EncoderDecoderModel(config=encoder_decoder_config)
-
-    num_gpu = torch.cuda.device_count()
+    num_gpu = torch.cuda.device_count() or 1
     gradient_accumulation_steps = args.batch_size // (num_gpu * args.batch_size_per_gpu)
-    
+
+    # 🛑 Forcefully disable fp16 if not on CUDA-compatible GPU
+    if not torch.cuda.is_available() or "cuda" not in torch.device("cpu").type:
+        print("⚠️ No GPU detected. Forcing fp16=False.")
+        args.fp16 = False
+        args.fp16_full_eval = False  # Also disable FP16 eval if enabled
+
     from transformers import Trainer, TrainingArguments
     training_args = TrainingArguments(
         output_dir=args.output_dir,
@@ -117,7 +122,7 @@ if __name__ == '__main__':
     parser.add_argument("--batch_size_per_gpu", type=int, default=4)
     parser.add_argument("--eval_steps", type=int, default=500)
     parser.add_argument("--save_steps", type=int, default=500)
-    parser.add_argument("--fp16", type=bool, default=True)
+    parser.add_argument("--fp16", type=bool, default=False)
     parser.add_argument("--learning_rate", type=float, default=7e-4)
     parser.add_argument("--num_train_epochs", type=int, default=3)
     parser.add_argument("--warmup_ratio", type=float, default=0.05)

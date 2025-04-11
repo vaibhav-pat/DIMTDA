@@ -23,3 +23,4 @@ python codes/pretrain_trans.py \
     --split_json_file_path $split_json_file_path \
     --output_dir $trans_model_dir \
     --batch_size_per_gpu 4
+    --fp16 False
