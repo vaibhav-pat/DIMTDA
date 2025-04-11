@@ -68,11 +68,10 @@ def train(args):
     num_gpu = torch.cuda.device_count() or 1
     gradient_accumulation_steps = args.batch_size // (num_gpu * args.batch_size_per_gpu)
 
-    # 🛑 Forcefully disable fp16 if not on CUDA-compatible GPU
     if not torch.cuda.is_available() or "cuda" not in torch.device("cpu").type:
         print("⚠️ No GPU detected. Forcing fp16=False.")
         args.fp16 = False
-        args.fp16_full_eval = False  # Also disable FP16 eval if enabled
+        args.fp16_full_eval = False 
 
     from transformers import Trainer, TrainingArguments
     training_args = TrainingArguments(
