@@ -91,7 +91,7 @@ def train(args):
         warmup_ratio=args.warmup_ratio,
         dataloader_num_workers=args.dataloader_num_workers
     )
-
+    os.environ["WANDB_MODE"] = "disabled"
     trainer = Trainer(
         model=model,
         args=training_args,
