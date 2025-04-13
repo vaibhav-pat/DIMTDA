@@ -70,6 +70,18 @@ bash inference.sh
 bash evaluate.sh
 ```
 
+### 7. entire code running script
+```bash
+bash !python codes/pretrain_trans.py \
+  --en_tokenizer_dir utils/en_tokenizer \
+  --zh_tokenizer_dir utils/zh_tokenizer \
+  --en_mmd_dir data/en_mmd \
+  --zh_mmd_dir data/zh_mmd \
+  --split_json_file_path data/split.json \
+  --output_dir output/pretrain_model \
+  --batch_size_per_gpu 4 \
+```
+
 ## 🖻 More samples
 The output samples of DIMTDA. For each image pair, the left one is the input document image, and the right one is the output translations in markdown format after rendering.
 ![](images/fig_appendix.png)
