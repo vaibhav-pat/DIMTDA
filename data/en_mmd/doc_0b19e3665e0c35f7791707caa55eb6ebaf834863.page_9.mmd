@@ -1,0 +1,46 @@
+Velocity loop mode: The set value is -210 ~ 210 corresponds to -210 ~ 210rpm
+‘Angle loop mode: 0 ~ 32767 corresponds to 0° ~ 360°
+Data feedback method includes active reporting and polling.
+
+Motor identifier range: 0x32 ~ 0x500
+
+Operation steps:
+
+1) Set the feedback method (polling method or active reporting method,
+default in active reporting method at 1kHz)
+
+2) Set motor mode (open loop, current loop, velocity loop, angle loop, default
+in open loop)
+
+3). Send the set value.
+
+1. Command in open-loop mode (format of other modes is the same):
+
+-32767 ~ 32767.
+
+‘Open-loop command, rang
+
+‘Command
+
+Teil To
+
+pata | pata | pata | para | pata | pata | para | pata | pata
+fed | oo | im | 2a | a | | 6 | iw |
+
+Open | open | Open | Open | Open | Open | Open | Open
+Descrip | loop set | loop set | loop set | loop set | loop set | loop set | loop set | loop set
+“tion” | highs | lows | high® | lowS | highS | lows | highs | lows
+
+bits | bits | bits | bits | bits | bits | bits | bits
+
+Motor
+wD
+
+‘Command
+
+Identifier | 0433,
+
+pata | para | para | pata) pata | para | para | Dara,
+om }m |e |e | # |e) ow | om
+
+eld

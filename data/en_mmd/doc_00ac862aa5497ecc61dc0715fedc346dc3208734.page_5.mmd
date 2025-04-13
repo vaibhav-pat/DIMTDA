@@ -1,0 +1,31 @@
+F_ZSSRMOB_MARKER - Mobility marker.
+
+‘Students witha location of study (LOCSDY) of Abroad for whole year (7) or Abroad for @ proportion of
+the year (U) (LOCSDY = U applicable rom 2014/15) have a mobliy entity returned to capture further
+Information about thei mobilty experience. Students can have muliple mobily enites returned and
+‘each ently can have multiple types (MOBTYPET-3). For the purpose of creating the student stat
+fatos, students wo are abroad during the year and are nat studying for any portion ofthat year need
+tobe ientiied. Where a student has no mobilty entity we assume they are studying and they wll be
+setiod,
+
+‘TECHNICAL SPECIFICATION
+Using DATASETS.CYV051_MOBILITY create a temporary table to idenily all NSTANCEKEYs which
+
+do not have any of heie mobility types (MOBTYPE-2) as 01 Study set ZMOB_TEMP to 1 for these
+
+MOBTYPEI | MOBTYPEI | MOBTYPEI | ZMOB_TEMP
+(02,03, null | 02, 03, null | 02,03, null 1
+Other wise 0
+
+For each instance, take the lowest value of ZMOB_TEMP across all mabilty ent
+
+Let outer join DATASETS.CYY0S! to this tomporary table using INSTANCEKEY
+
+LOCSOY | 2MOB_TEMP | 2SSRMOB_MARKER
+T a °
+1 1
+Null a
+v a °
+1 2
+Nl o
+‘Otherwise o

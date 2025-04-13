@@ -1,0 +1,62 @@
+spantcunFitat = spenthat
+SpentCunFYieay = spentTray
+SpentCunFvOther = spentother
+SpentCumFYSube = spentSubc
+
+Spent CumPYURS = spentURs
+spentCunFYURSHat ~ spentURSHat
+SpentCunFYCarryOver = spentcarryover
+SpentcunFYrotal = spent¥atal
+
+nd 2
+end £F
+
+WORK. SCHEDULED (FROM TASK PLANS)
+Dim thisweeksched = (From id In d.va schedPlans —
+Where 1d.nASAcontract = cStr(We NSA ContractConbosox.Selectediten)
+
+‘and Aé.Rev = Ctr(Me.ConbotoxRev Selectediten) _
+‘and Ag: weekEnding = cDate(currentweek)
+Select 14) ToList
+
+1 thisteekSched.count > @ Then
+
+schedLab = thisteekSched.1ten(@) Labor
+Echedhat = thisheeksched.Iven(@) hatersals
+Echedtrav = thisheeksched.tten(@) Travel
+Echedother = thisheekSched, Ften(@) other
+EchedSube = thisweeksched,iten(@) ube
+
+schedlRS = thisweekSched. ien(@) URS
+
+SchedURHat = thisweetSched. tem(2).URSHAt
+SchedTotal ~ thiswsekSchea, Ften() dkTotal
+
+1 thisteeksched.tten(a) Regis Ts Nothing Then
+
+go nothing,
+ese
+schecRaghrs = thisWeekSched.rtem(a).Reghies
+nd 2
+1 thisteeksched.Tten(8) .oTHours 1s Wothing Then
+go nothing,
+ese
+‘schegoTiis = thishekSched.rten(@) .oTHours
+end $F
+1 thisteeksched.1ten(9) subtegHrs Then
+go nothing,
+ese
+scheoSubRegiis = thisheekSched.Tten(@) Subfeghrs
+end $F
+1 thisteeksched.tten(a) suboTHs Ts Nothing Then
+go nothing
+ese
+schedSubRegiis = thisheekSched.rten(@) .suboTirs
+nd 3
+
+end £F
+
+omits
+
+im com = (From 4d In d.vw_ComnstsBycontracts _
+were 1d.Contract = CSte(He.RASA ContractConbodox.SelectedIten) _

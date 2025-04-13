@@ -1,0 +1,29 @@
+Figure A9. Rtracton Estimator within Swath Edtor dag bax.
+
+A.7 Vessel Draft
+
+CCaris HIPS & SIPS uses a dolta draft filet interpolate changes in drat. However, frequent pumping of
+ballast water to trim the vessel often makes this methodology unsustainable. For this reason GA uses
+the more accurate GPS Tide methodology to correct for this
+
+‘A.8 Dynamic Draft 'Squat' (Only as Required)
+
+CCaris HIPS & SIPS cannot compute dynamic draft unless a drat table ie applied inthe “ht fe. A
+dynamic daft table is available (see below) forthe AV Solanderin the “hv fle. The merge
+Computation using a dynamic draft able wil always provide a more accurate vertical solution
+particulary where the vessel stops and start
+
+rat (m) Speed en)
+‘0.000 0.000,
+2.000 000
+0x70 12000
+
+In this example (AV Solander, no squat is applied until 5 knots and then progressively applied to a
+maximum of 017m (at the transducer at 12 knots and above. These tables are determined by squat
+teste for diferent vessels
+
+AQ Merge
+
+‘The Merge process converts alongtracklacoss-track depths int latitude, longitude and depth by
+Combining the ship navigation with the horizontal and vertical offsets trom the Garis HIPS & SIPS
+vessel configuration fl. This geographically references the sounding position and depth

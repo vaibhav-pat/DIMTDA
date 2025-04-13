@@ -1,0 +1,57 @@
+Common File Functions
+
+Topen TT aaa
+Feisee 0 lose a sex
+pocet)s Fpote 0 — [writes chanetsr oa seam
+gate ead a character fom a ream
+fpeint?()+ faces [fonmatted 10
+Feet ()_e Zpute [string handling
+Feeek() Postion th ile poi ts paricular Byte
+fe080 ‘ese if EOP
+
+Opening and Closing Files
+
+A stream is associated witha specific file by performing an open operation. Once a file is opened
+information may be exchanged between it and your program. Eac file that is opened has a unique
+file contol structure of type FILE (which is defied in <stdio.h> along with the prototypes for
+ll VO funetions and constants suchas EOF (-)). file pointer isa pointer to ths FILE structure
+Which identifies a specific file and defines various things about the file including its name,
+readrite status, and current pos le pointer variable is defined as follows
+
+FILE ‘pts
+
+Te fopen() function opens a stream for use and links file with dhat steam returning a valid file
+pointer which is positioned correctly within the file if all is correct. fopent) hus the following
+
+prototype
+FILE *fopen( const char ‘filename, const char ‘mode };
+
+‘where filename is @ pointer to a string of characters which make up the name and path of the
+required file, and mode isa pointer toa string which specifies how the file isto be opened. The
+following table ists some vales for mode.
+
+7 [opens a text file for reading (aust exis
+| opens text file for writing (overwritten or created)
+‘a | append toa text file
+
+16 | opens a binary file for readin
+
+‘w8 | opens binary file For writing
+
+ab | appends toa binary file
+
++ | opens a text file for readwite (must oS)
+we | opens a text file for read/write
+‘a+ | append a text file or read/write
+
+rhe [ opens a binary file fr eadhwrite
+‘wb# | opens a binary file fr eadhvrite
+
+‘abt | append a binary Bile for read/write
+If fopen( } cannot open "cest «dt it will a etum a NULL pointer which should always
+be tested for as follows.
+
+( (Ep © fopen( "test.dat*, ) ss NULL >
+
+puts( "Cannot open file")
+exit( lye

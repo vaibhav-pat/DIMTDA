@@ -1,0 +1,50 @@
+‘The driver is able to perform close-loop control of the motor’s angle, velocity
+‘or current according to the user's target instructions, and feeds back the motor’s
+real time angle, velocity, current, temperature and other information, through
+the CAN bus,
+
+Description of CAN ID Indicator Light:
+
+1D Description of Indicator Light
+1 Green light flashes once every 5s
+
+2 Green light flashes twice every 5s
+
+3 Green light flashes 3 times every 58
+4 Green light flashes 4 times every 5s
+5 Green light flashes 5 times every 5s
+6 Groen light flashes 6 times every 5s
+7 Green light flashes 7 times every 5s
+
+Descriptions of Fault Indicator Light, Buzzer and Related Protection
+Regulations:
+
+Description of Fault Indicator
+
+Fault Description Pgh and Busses
+
+Under voltage! (voltage is higher than
+The red light is always on
+18V and lower than 22V)
+
+Under voltage? (voltage lower | ye guzzer keeps beeping, andthe
+shant8V) motor shuts down
+
+‘The buzzer keeps beeping, and the
+motor shuts down
+
+‘The buzzer keeps beeping, and the
+motor shuts down
+
+‘Over voltage (voltage is higher than 63V)
+
+Overcurrent (greater than 1S)
+
+Over velocity (Greater than the maximum.
+The red light is always on
+velocity of the motor)
+
+‘The yellow light flashes every 2s
+to corresponding ID
+
+Over heat 1 (temperature of motor

@@ -1,0 +1,72 @@
+Dim schedRegnrs as Decimal = @
+Dim schedbtlirs Ae Dacinal = @
+Dim SehedsubRegirs as Daciaal
+Dim schedsuboTiine Ar Decinal
+
+Dim schedreinge As Oecinal = @
+im schedoH Ae Decimal
+
+Dim schedFee Az Decimal
+Dim schedGa As Decinal
+Dim schedGht Az Decimal = @
+
+set up dates
+Dim currenticek A= Date
+Dim lastweek As Oats
+
+(eakEndngbateTinePicken. Text
+
+1 ThicrazyLandoataGridvieu.Fows.Count > @ Then
+Dim rowindex A integer
+outndex = TolCea2yLanddataGridview.currentCell Rowingex
+
+2 rowindex = @ Then
+Tasteek = pateadd (oaternterval.vay,
+ease
+Die row As OstaGrddVSeuow
+astheek = row.cells(2) value
+
+1 currenthek)
+
+‘lcrazyLandbatacridview.Roxs(rawindex ~ 3)
+
+nd 2
+else
+
+do nothing
+end 2
+
+planned side
+
+Dim avelans = (Fro Ad in d.tblcrazytandoevels _
+Where 1d.RASA Contact = CStr(HesWASA_ContractCosboBox.Selectedites)
+
+‘and Aé.Rev = Cstr(Me.CombosoxRev.selectediten) _
+‘nd Ad. MeekEnding = Coate(lastweck) —
+Select 14) ToList
+
+Dim thisweekPlans = (From id In d.v Planssyorigsases _
+Where 1d.nASAcontract = CStr(Me NASA CoftractConbosox.Selectediten)
+
+‘and Aé.Rev = Ctr(Me.ConbotoxRev SelectedIten) _
+‘nd Ad.weekending = CDate(currestweek) —
+Select id).tetist,
+
+ovision rates
+
+Dim provF as Deciaal = 0
+Dim provFee As Decimal = @
+Dim provol as Dacieal = @
+Dim provGA as Dacieal = @
+Dim provaRr As Decimal = @
+Dim provTotal as Decinal = @
+
+Dim getProv = (From id 10 d.tblTaskPlansProvs _
+ere 1d.nasAContract = cSte(Me.RASA ContractConbodox.SelectedIten) _
+find Sd:Moekending = Coate("a1-6i-2003")
+
+Select i4).TaList
+
+1 getProv.count = 1 Then
+
+provF = coec(getProv.1ten(9) Fringe)
