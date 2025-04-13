@@ -7,3 +7,6 @@ sentencepiece>=0.1.99
 jieba
 numpy
 scikit-learn
+sacrebleu
+argparse
+PIL
