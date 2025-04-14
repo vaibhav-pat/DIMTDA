@@ -19,8 +19,8 @@ def process_folder(img_dir, output_json_path):
             tgt_text = translator.translate(src_text, src='en', dest='zh-cn').text.strip() if src_text else ""
         except Exception as e:
             print(f"⚠️ Error with {filename}: {e}")
-            src_text, tgt_text = "", ""
-
+            src_text, tgt_text = "", 
+        
         results.append({
             "image": filename,
             "src_text": src_text,
