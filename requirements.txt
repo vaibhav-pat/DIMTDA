@@ -9,4 +9,4 @@ numpy
 scikit-learn
 sacrebleu
 argparse
-PIL
+zss
