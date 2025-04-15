@@ -13,6 +13,9 @@ def train(args):
     en_tokenizer = AutoTokenizer.from_pretrained(args.en_tokenizer_dir)
     zh_tokenizer = AutoTokenizer.from_pretrained(args.zh_tokenizer_dir)
 
+    print(en_tokenizer.model_max_length)  # Should be 1536 or greater
+    print(zh_tokenizer.model_max_length)  # Should be 1536 or greater
+
     with open(args.split_json_file_path, 'r') as f:
         json_dict = json.load(f)
     train_name_list = json_dict['train_name_list']
