@@ -107,7 +107,12 @@ def train(args):
     print(training_args)
 
     trainer.train()
-    trainer.save_model(args.output_dir)
+    # Assuming you're using PyTorch
+import torch
+
+# Save model state
+torch.save(model.state_dict(), "output/model_pretrained.pth")  # or model_finetuned.pth
+
 
 
 if __name__ == '__main__':

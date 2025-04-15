@@ -8,5 +8,4 @@ jieba
 numpy
 scikit-learn
 sacrebleu
-argparse
 zss

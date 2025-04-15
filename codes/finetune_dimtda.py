@@ -3,11 +3,11 @@ import json
 import torch
 import jieba
 import re
-import argparse 
+import argparse
 
 def train(args):
     MAX_LENGTH = args.max_length
-    
+
     from transformers import AutoTokenizer, DonutProcessor, BeitImageProcessor
     dit_processor = BeitImageProcessor.from_pretrained(args.dit_model_dir)
     nougat_processor = DonutProcessor.from_pretrained(args.image_processor_dir)
@@ -26,48 +26,92 @@ def train(args):
     trans_model = EncoderDecoderModel.from_pretrained(args.trans_model_dir)
     dit_model = BeitModel.from_pretrained(args.dit_model_dir)
     nougat_model = VisionEncoderDecoderModel.from_pretrained(args.nougat_model_dir)
-    
+
     from my_model import DIMTDAModel
     my_config = EncoderDecoderConfig.from_pretrained(args.trans_model_dir)
     model = DIMTDAModel(my_config, trans_model, dit_model, nougat_model, args.num_queries, args.qformer_config_dir)
-
-    num_gpu = torch.cuda.device_count()
-    gradient_accumulation_steps = args.batch_size // (num_gpu * args.batch_size_per_gpu)
-    
-    from transformers import Trainer, TrainingArguments
-    training_args = TrainingArguments(
-        output_dir=args.output_dir,
-        per_device_train_batch_size=args.batch_size_per_gpu,
-        per_device_eval_batch_size=args.batch_size_per_gpu,
-        gradient_accumulation_steps=gradient_accumulation_steps,
-        logging_strategy='steps',
-        logging_steps=1,
-        evaluation_strategy='steps',
-        eval_steps=args.eval_steps,
-        save_strategy='steps',
-        save_steps=args.save_steps,
-        fp16=args.fp16,
-        learning_rate=args.learning_rate,
-        num_train_epochs=args.num_train_epochs,
-        warmup_ratio=args.warmup_ratio,
-        dataloader_num_workers=args.dataloader_num_workers,
-    )
-
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=valid_dataset,
-    )
 
     print(model)
     total_params = sum(p.numel() for p in model.parameters())
     print(f'{total_params:,} total parameters.')
     total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f'{total_trainable_params:,} training parameters.')
-    print(training_args)
 
-    trainer.train()
+    # Dataloaders
+    from torch.utils.data import DataLoader
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size_per_gpu, shuffle=True, num_workers=args.dataloader_num_workers)
+    valid_loader = DataLoader(valid_dataset, batch_size=args.batch_size_per_gpu, shuffle=False, num_workers=args.dataloader_num_workers)
+
+    # Optimizer & Scheduler
+    from transformers import AdamW, get_linear_schedule_with_warmup
+    optimizer = AdamW(model.parameters(), lr=args.learning_rate)
+    total_steps = len(train_loader) * args.num_train_epochs
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=int(total_steps * args.warmup_ratio),
+        num_training_steps=total_steps
+    )
+
+    from torch.nn import CrossEntropyLoss
+    loss_fn = CrossEntropyLoss(ignore_index=-100)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    best_accuracy = 0.0
+    os.makedirs(args.output_dir, exist_ok=True)
+
+    for epoch in range(args.num_train_epochs):
+        model.train()
+        total_loss = 0.0
+
+        for batch in train_loader:
+            inputs = {k: v.to(device) for k, v in batch.items() if isinstance(v, torch.Tensor)}
+            outputs = model(**inputs)
+            logits = outputs.logits
+            labels = inputs["labels"]
+
+            loss = loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
+            loss.backward()
+
+            optimizer.step()
+            scheduler.step()
+            optimizer.zero_grad()
+
+            total_loss += loss.item()
+
+        print(f"[Epoch {epoch+1}/{args.num_train_epochs}] Training Loss: {total_loss:.4f}")
+
+        # Validation
+        model.eval()
+        correct = 0
+        total = 0
+
+        with torch.no_grad():
+            for batch in valid_loader:
+                inputs = {k: v.to(device) for k, v in batch.items() if isinstance(v, torch.Tensor)}
+                outputs = model(**inputs)
+                logits = outputs.logits
+                labels = inputs["labels"]
+
+                preds = torch.argmax(logits, dim=-1)
+                mask = labels != -100
+
+                correct += ((preds == labels) & mask).sum().item()
+                total += mask.sum().item()
+
+        accuracy = correct / total
+        print(f"Validation Accuracy: {accuracy:.4f}")
+
+        # Save best model
+        if accuracy > best_accuracy:
+            best_accuracy = accuracy
+            torch.save(model.state_dict(), os.path.join(args.output_dir, "best_model.pth"))
+            print("Saved best model.")
+
+    # Save final accuracy
+    with open(os.path.join(args.output_dir, "accuracy.txt"), "w") as f:
+        f.write(f"Best Validation Accuracy: {best_accuracy:.4f}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
