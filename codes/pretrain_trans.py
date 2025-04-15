@@ -25,34 +25,8 @@ def train(args):
     from transformers import EncoderDecoderModel, EncoderDecoderConfig, BertConfig
 
     encoder_config = BertConfig()
-    decoder_config = BertConfig()
+    decoder_config = BertConfig(is_decoder=True, add_cross_attention=True)
     encoder_decoder_config = EncoderDecoderConfig.from_encoder_decoder_configs(encoder_config, decoder_config)
-    
-    # Modify config according to transformer-base
-    encoder_decoder_config.encoder.bos_token_id = en_tokenizer.bos_token_id
-    encoder_decoder_config.encoder.eos_token_id = en_tokenizer.eos_token_id
-    encoder_decoder_config.encoder.hidden_size = 512
-    encoder_decoder_config.encoder.intermediate_size = 2048
-    encoder_decoder_config.encoder.max_length = MAX_LENGTH
-    encoder_decoder_config.encoder.max_position_embeddings = MAX_LENGTH
-    encoder_decoder_config.encoder.num_attention_heads = 8
-    encoder_decoder_config.encoder.num_hidden_layers = 6
-    encoder_decoder_config.encoder.pad_token_id = en_tokenizer.pad_token_id
-    encoder_decoder_config.encoder.type_vocab_size = 1
-    encoder_decoder_config.encoder.vocab_size = len(en_tokenizer)
-
-    encoder_decoder_config.decoder.bos_token_id = zh_tokenizer.bos_token_id
-    encoder_decoder_config.decoder.decoder_start_token_id = zh_tokenizer.bos_token_id
-    encoder_decoder_config.decoder.eos_token_id = zh_tokenizer.eos_token_id
-    encoder_decoder_config.decoder.hidden_size = 512
-    encoder_decoder_config.decoder.intermediate_size = 2048
-    encoder_decoder_config.decoder.max_length = MAX_LENGTH
-    encoder_decoder_config.decoder.max_position_embeddings = MAX_LENGTH
-    encoder_decoder_config.decoder.num_attention_heads = 8
-    encoder_decoder_config.decoder.num_hidden_layers = 6
-    encoder_decoder_config.decoder.pad_token_id = zh_tokenizer.pad_token_id
-    encoder_decoder_config.decoder.type_vocab_size = 1
-    encoder_decoder_config.decoder.vocab_size = len(zh_tokenizer)
 
     encoder_decoder_config.decoder_start_token_id = zh_tokenizer.bos_token_id
     encoder_decoder_config.pad_token_id = zh_tokenizer.pad_token_id
@@ -68,30 +42,35 @@ def train(args):
     num_gpu = torch.cuda.device_count() or 1
     gradient_accumulation_steps = args.batch_size // (num_gpu * args.batch_size_per_gpu)
 
-    if not torch.cuda.is_available() or "cuda" not in torch.device("cpu").type:
-        print("⚠️ No GPU detected. Forcing fp16=False.")
+    if not torch.cuda.is_available():
+        print("\u26a0\ufe0f No GPU detected. Forcing fp16=False.")
         args.fp16 = False
-        args.fp16_full_eval = False 
 
-    from transformers import Trainer, TrainingArguments
+    from transformers import TrainingArguments
     training_args = TrainingArguments(
         output_dir=args.output_dir,
         per_device_train_batch_size=args.batch_size_per_gpu,
         per_device_eval_batch_size=args.batch_size_per_gpu,
         gradient_accumulation_steps=gradient_accumulation_steps,
-        logging_strategy='steps',
-        logging_steps=1,
-        evaluation_strategy='steps',
-        eval_steps=args.eval_steps,
-        save_strategy='steps',
+        logging_dir=os.path.join(args.output_dir, "logs"),
+        logging_steps=100,
         save_steps=args.save_steps,
+        save_total_limit=3,
         fp16=args.fp16,
         learning_rate=args.learning_rate,
         num_train_epochs=args.num_train_epochs,
         warmup_ratio=args.warmup_ratio,
-        dataloader_num_workers=args.dataloader_num_workers
+        dataloader_num_workers=args.dataloader_num_workers,
+        remove_unused_columns=False,
+        do_train=True,
+        do_eval=True,
+        evaluation_strategy="steps",
+        eval_steps=args.eval_steps
     )
+
     os.environ["WANDB_MODE"] = "disabled"
+
+    from transformers import Trainer
     trainer = Trainer(
         model=model,
         args=training_args,
@@ -108,13 +87,9 @@ def train(args):
 
     trainer.train()
 
-    # Save model weights
+    # Save final model checkpoint
     os.makedirs(args.output_dir, exist_ok=True)
     torch.save(model.state_dict(), os.path.join(args.output_dir, "model_pretrained.pth"))
-
-
-    # Assuming you're using PyTorch
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -134,7 +109,7 @@ if __name__ == '__main__':
     parser.add_argument("--num_train_epochs", type=int, default=3)
     parser.add_argument("--warmup_ratio", type=float, default=0.05)
     parser.add_argument("--dataloader_num_workers", type=int, default=8)
-    
+
     args = parser.parse_args()
-    
+
     train(args)
