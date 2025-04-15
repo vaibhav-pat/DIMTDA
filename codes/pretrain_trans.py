@@ -107,12 +107,13 @@ def train(args):
     print(training_args)
 
     trainer.train()
+
+    # Save model weights
+    os.makedirs(args.output_dir, exist_ok=True)
+    torch.save(model.state_dict(), os.path.join(args.output_dir, "model_pretrained.pth"))
+
+
     # Assuming you're using PyTorch
-import torch
-
-# Save model state
-torch.save(model.state_dict(), "output/model_pretrained.pth")  # or model_finetuned.pth
-
 
 
 if __name__ == '__main__':
