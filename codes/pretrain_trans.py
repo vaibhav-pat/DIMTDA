@@ -8,6 +8,7 @@ import argparse
 def train(args):
     MAX_LENGTH = args.max_length
 
+    # Define tokenizers
     from transformers import AutoTokenizer
     en_tokenizer = AutoTokenizer.from_pretrained(args.en_tokenizer_dir)
     zh_tokenizer = AutoTokenizer.from_pretrained(args.zh_tokenizer_dir)
@@ -17,13 +18,15 @@ def train(args):
     train_name_list = json_dict['train_name_list']
     valid_name_list = json_dict['valid_name_list']
 
+    # Define dataset
     from my_dataset import DoTADatasetTrans
     valid_dataset = DoTADatasetTrans(en_tokenizer, zh_tokenizer, args.en_mmd_dir, args.zh_mmd_dir, valid_name_list, MAX_LENGTH)
     train_dataset = DoTADatasetTrans(en_tokenizer, zh_tokenizer, args.en_mmd_dir, args.zh_mmd_dir, train_name_list, MAX_LENGTH)
 
+    # Define model config
     from transformers import EncoderDecoderModel, EncoderDecoderConfig, BertConfig
 
-    # Updated encoder and decoder configuration with max_position_embeddings = 1536
+    # Encoder config
     encoder_config = BertConfig(
         hidden_size=768,
         num_attention_heads=12,
@@ -39,6 +42,7 @@ def train(args):
         vocab_size=30522,
     )
 
+    # Decoder config
     decoder_config = BertConfig(
         is_decoder=True,
         add_cross_attention=True,
@@ -99,6 +103,7 @@ def train(args):
     gradient_accumulation_steps = args.batch_size // (num_gpu * args.batch_size_per_gpu)
 
     if not torch.cuda.is_available() or "cuda" not in torch.device("cpu").type:
+        print("⚠️ No GPU detected. Forcing fp16=False.")
         args.fp16 = False
         args.fp16_full_eval = False 
 
