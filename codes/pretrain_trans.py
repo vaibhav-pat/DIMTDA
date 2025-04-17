@@ -110,12 +110,13 @@ def train(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--en_tokenizer_dir", type=str)
-    parser.add_argument("--zh_tokenizer_dir", type=str)
+    parser.add_argument("--en_tokenizer_dir", type=str,required = True)
+    parser.add_argument("--zh_tokenizer_dir", type=str, required= True)
     parser.add_argument("--en_mmd_dir", type=str)
     parser.add_argument("--zh_mmd_dir", type=str)
-    parser.add_argument("--split_json_file_path", type=str)
-    parser.add_argument("--output_dir", type=str)
+    parser.add_argument('--data_dir', type=str, required=True)
+    parser.add_argument("--split_json", type=str , required = True)
+    parser.add_argument("--output_dir", type=str,required = True)
     parser.add_argument("--max_length", type=int, default=1536)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--batch_size_per_gpu", type=int, default=4)
